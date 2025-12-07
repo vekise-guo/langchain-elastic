@@ -7,11 +7,11 @@ readme = "README.md"
 packages = [
     { include = "langchain_elasticsearch" }
 ]
-repository = "https://github.com/langchain-ai/langchain-elastic"
+repository = "https://github.com/vekise-guo/langchain-elastic"
 license = "MIT"
 
 [tool.poetry.urls]
-"Source Code" = "https://github.com/langchain-ai/langchain-elastic/tree/main/libs/elasticsearch"
+"Source Code" = "https://github.com/vekise-guo/langchain-elastic/tree/main/libs/elasticsearch"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
