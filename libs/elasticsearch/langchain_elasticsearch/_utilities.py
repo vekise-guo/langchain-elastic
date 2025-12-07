@@ -25,7 +25,7 @@ class DistanceStrategy(str, Enum):
 def user_agent(prefix: str) -> str:
     """Generate a User-Agent string with the langchain-elasticsearch package version."""
     try:
-        package_version = version("langchain-elasticsearch")
+        package_version = version("langchain-elasticsearch-lc1")
     except Exception:
         # Fallback if version cannot be determined
         package_version = "unknown"
