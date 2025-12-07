@@ -6,9 +6,11 @@ from typing import Any, AsyncGenerator, Dict, List, Optional
 from unittest.mock import AsyncMock, patch
 
 import pytest
+import warnings
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers.vectorstore import VectorStore as EVectorStore
 from langchain_core.documents import Document
+from langchain_core._api.deprecation import LangChainPendingDeprecationWarning
 
 from langchain_elasticsearch._async.vectorstores import (
     ApproxRetrievalStrategy,
@@ -159,10 +161,14 @@ class TestHitsToDocsScores:
 
 class TestConvertStrategy:
     def test_dense_approx(self) -> None:
-        actual = _convert_retrieval_strategy(
-            ApproxRetrievalStrategy(query_model_id="my model", hybrid=True, rrf=False),
-            distance=DistanceStrategy.DOT_PRODUCT,
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", LangChainPendingDeprecationWarning)
+            actual = _convert_retrieval_strategy(
+                ApproxRetrievalStrategy(
+                    query_model_id="my model", hybrid=True, rrf=False
+                ),
+                distance=DistanceStrategy.DOT_PRODUCT,
+            )
         assert isinstance(actual, AsyncDenseVectorStrategy)
         assert actual.distance == DistanceMetric.DOT_PRODUCT
         assert actual.model_id == "my model"
@@ -170,21 +176,29 @@ class TestConvertStrategy:
         assert actual.rrf is False
 
     def test_dense_exact(self) -> None:
-        actual = _convert_retrieval_strategy(
-            ExactRetrievalStrategy(), distance=DistanceStrategy.EUCLIDEAN_DISTANCE
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", LangChainPendingDeprecationWarning)
+            actual = _convert_retrieval_strategy(
+                ExactRetrievalStrategy(), distance=DistanceStrategy.EUCLIDEAN_DISTANCE
+            )
         assert isinstance(actual, AsyncDenseVectorScriptScoreStrategy)
         assert actual.distance == DistanceMetric.EUCLIDEAN_DISTANCE
 
     def test_sparse(self) -> None:
-        actual = _convert_retrieval_strategy(
-            SparseRetrievalStrategy(model_id="my model ID")
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", LangChainPendingDeprecationWarning)
+            actual = _convert_retrieval_strategy(
+                SparseRetrievalStrategy(model_id="my model ID")
+            )
         assert isinstance(actual, AsyncSparseVectorStrategy)
         assert actual.model_id == "my model ID"
 
     def test_bm25(self) -> None:
-        actual = _convert_retrieval_strategy(BM25RetrievalStrategy(k1=1.7, b=5.4))
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", LangChainPendingDeprecationWarning)
+            actual = _convert_retrieval_strategy(
+                BM25RetrievalStrategy(k1=1.7, b=5.4)
+            )
         assert isinstance(actual, AsyncBM25Strategy)
         assert actual.k1 == 1.7
         assert actual.b == 5.4
@@ -210,7 +224,7 @@ class TestVectorStore:
         store = AsyncElasticsearchStore(
             index_name="test_index",
             embedding=embeddings,
-            strategy=ApproxRetrievalStrategy(hybrid=True),
+            strategy=AsyncDenseVectorStrategy(hybrid=True),
             es_connection=client,
         )
         try:
