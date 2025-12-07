@@ -5,7 +5,7 @@ This package contains the LangChain integration with Elasticsearch.
 ## Installation
 
 ```bash
-pip install -U langchain-elasticsearch
+pip install -U langchain-elasticsearch-lc1
 ```
 
 ## Elasticsearch setup
